@@ -17,7 +17,8 @@ package gossert
 
 import "errors"
 
-// Ok panics if the given condition is not true
+// Ok panics if the given condition is not true. msg is the error message
+// used when Ok panics.
 func Ok(cond bool, msg string) {
         if !cond {
                 panic(errors.New(msg))
