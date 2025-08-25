@@ -10,7 +10,7 @@ Usage:
         import "github.com/vlence/gossert"
 
         func main() {
-                gossert.Ok(true, 'you will never see this error message') 
+                gossert.Ok(true, "you will never see this error message")
         }
 */
 package gossert
