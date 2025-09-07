@@ -24,16 +24,13 @@ import "errors"
 // executing from this point on would be undefined behaviour.
 var PanicOnAssertionError = true
 
-// An assertion error. As the name implies this error type is used
-// to denote an assertion failing. The purpose of this type is to
-// help distinguish assertion errors from other error types when
-// recovering from a panic.
-type AssertionError struct {
-        msg string
-}
+// An assertion error. The purpose of this type is to make it simple
+// to determine if an error is an assertion error.
+type Error string
 
-func (err *AssertionError) Error() string {
-        return err.msg
+// Error returns the assertion error message as "assert: msg"
+func (e Error) Error() string {
+        return "assert: " + string(e)
 }
 
 // Ok panics if the given condition is not true. msg is the error message
