@@ -15,8 +15,6 @@ Usage:
 */
 package gossert
 
-import "errors"
-
 // Set this to false if you don't want to panic when an assertion fails.
 // This is set to true by default. Some may want to turn off panics in
 // production but I recommend leaving it on because if your assertion
@@ -41,6 +39,6 @@ func Ok(cond bool, msg string) {
         }
 
         if !cond {
-                panic(&AssertionError{msg})
+                panic(Error(msg))
         }
 }
