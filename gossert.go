@@ -30,7 +30,7 @@ type Error struct {
 }
 
 // Error returns the assertion error message as "assert: msg"
-func (e *Error) Error() string {
+func (e Error) Error() string {
 	if e.cause == nil {
 		return "assert: " + string(e.msg)
 	} else {
@@ -39,7 +39,7 @@ func (e *Error) Error() string {
 }
 
 // Cause returns the error that led to this assertion error.
-func (e *Error) Cause() error {
+func (e Error) Cause() error {
 	return e.cause
 }
 

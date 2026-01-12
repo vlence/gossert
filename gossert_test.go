@@ -16,17 +16,17 @@ func TestOkDoesNotPanicWhenGivenTrue(t *testing.T) {
 func TestOkPanicsWhenGivenFalse(t *testing.T) {
         errmsg := "error message"
         
-        defer func () {
-                r, ok := recover().(error)
+        defer func (errmsg string) {
+                r, ok := recover().(*Error)
                 
                 if !ok {
                         t.Fatalf("could not recover error; got %v", r)
                 }
 
-                if r.Error() != errmsg {
+                if r.msg != errmsg {
                         t.Fatalf("error message did not match panic message; got \"%s\"", r.Error())
                 }
-        }()
+        }(errmsg)
         
         Ok(false, errmsg)
 
