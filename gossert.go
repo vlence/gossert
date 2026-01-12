@@ -5,13 +5,13 @@ will panic.
 
 Usage:
 
-        package main
+	package main
 
-        import "github.com/vlence/gossert"
+	import "github.com/vlence/gossert"
 
-        func main() {
-                gossert.Ok(true, "you will never see this error message")
-        }
+	func main() {
+	        gossert.Ok(true, "you will never see this error message")
+	}
 */
 package gossert
 
@@ -24,21 +24,45 @@ var PanicOnAssertionError = true
 
 // An assertion error. The purpose of this type is to make it simple
 // to determine if an error is an assertion error.
-type Error string
+type Error struct {
+	msg   string
+	cause error
+}
 
 // Error returns the assertion error message as "assert: msg"
-func (e Error) Error() string {
-        return "assert: " + string(e)
+func (e *Error) Error() string {
+	if e.cause == nil {
+		return "assert: " + string(e.msg)
+	} else {
+		return "assert: " + string(e.msg) + "\n\ncause: " + e.cause.Error()
+	}
+}
+
+// Cause returns the error that led to this assertion error.
+func (e *Error) Cause() error {
+	return e.cause
 }
 
 // Ok panics if the given condition is not true. msg is the error message
 // used when Ok panics.
 func Ok(cond bool, msg string) {
-        if !PanicOnAssertionError {
-                return
-        }
+	if !PanicOnAssertionError {
+		return
+	}
 
-        if !cond {
-                panic(Error(msg))
-        }
+	if !cond {
+		panic(&Error{msg, nil})
+	}
+}
+
+// NilErr panics with message msg if err is not nil. The
+// cause of the assertion error will be err.
+func NilErr(err error, msg string) {
+	if !PanicOnAssertionError {
+		return
+	}
+
+	if err != nil {
+		panic(&Error{msg, err})
+	}
 }
