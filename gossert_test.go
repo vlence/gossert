@@ -5,30 +5,36 @@ import "testing"
 func TestOkDoesNotPanicWhenGivenTrue(t *testing.T) {
         defer func () {
                 if r := recover(); r != nil {
-                        t.Errorf("Ok panicked; expected Ok to not panic")
+                        t.Fatalf("expected to recover nil but got %#v", r)
                 }
         }()
         
-        errmsg := "error message"
-        Ok(true, errmsg)
+        msg := "error message"
+        Ok(true, msg)
 }
 
 func TestOkPanicsWhenGivenFalse(t *testing.T) {
-        errmsg := "error message"
+        msg := "error message"
         
-        defer func (errmsg string) {
-                r, ok := recover().(*Error)
+        defer func (msg string) {
+		r := recover()
+
+		if r == nil {
+			t.Fatalf("expected to recover assertion error but got nil")
+		}
+
+		err, ok := r.(*Error)
                 
                 if !ok {
-                        t.Fatalf("could not recover error; got %v", r)
+                        t.Fatalf("could not recover error; got %#v", r)
                 }
 
-                if r.msg != errmsg {
-                        t.Fatalf("error message did not match panic message; got \"%s\"", r.Error())
+                if err.msg != msg {
+                        t.Fatalf("error message did not match panic message; got \"%s\"", err.msg)
                 }
-        }(errmsg)
+        }(msg)
         
-        Ok(false, errmsg)
+        Ok(false, msg)
 
-        t.Errorf("expected Ok to panic")
+        t.Errorf("Ok did not panic")
 }
