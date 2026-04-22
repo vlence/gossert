@@ -15,6 +15,10 @@ Usage:
 */
 package gossert
 
+import "fmt"
+
+var sprintf = fmt.Sprintf
+
 // Set this to false if you don't want to panic when an assertion fails.
 // This is set to true by default. Some may want to turn off panics in
 // production but I recommend leaving it on because if your assertion
@@ -43,26 +47,26 @@ func (e Error) Cause() error {
 	return e.cause
 }
 
-// Ok panics if the given condition is not true. msg is the error message
-// used when Ok panics.
-func Ok(cond bool, msg string) {
+// Ok panics if the given condition is not true. format and args
+// are used to format the error message, like [fmt.Errorf].
+func Ok(cond bool, format string, args ...any) {
 	if !PanicOnAssertionError {
 		return
 	}
 
 	if !cond {
-		panic(&Error{msg, nil})
+		panic(&Error{sprintf(format, args...), nil})
 	}
 }
 
-// NilErr panics with message msg if err is not nil. The
-// cause of the assertion error will be err.
-func NilErr(err error, msg string) {
+// NilErr panics if err is not nil. format and args
+// are used to format the error message, like [fmt.Errorf].
+func NilErr(err error, format string, args ...any) {
 	if !PanicOnAssertionError {
 		return
 	}
 
 	if err != nil {
-		panic(&Error{msg, err})
+		panic(&Error{sprintf(format, args...), err})
 	}
 }
